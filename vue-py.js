@@ -1,5 +1,5 @@
 ;(function() {
-	var vuePY = {}
+	
 	var chinesePointCode = {
 		"a": [21834, 38463, 38165],
 		"ai": [22467, 25384, 21710, 21769, 21696, 30353, 30284, 34108, 30702, 33406, 30861, 29233, 38552, 35830, 25457, 22003, 21964, 23250, 29815, 26279, 30777, 38207, 38701],
@@ -402,6 +402,42 @@
 		"nou": [32808],
 		"fou": [32566],
 		"bia": [39647]
+	}
+	var vuePY = {
+		chineseToPinYin: function (l1) {
+		    var l2 = l1.length
+		    var I1 = ''
+		    var reg = new RegExp('[a-zA-Z0-9]')
+		    for (var i = 0; i < l2; i++) {
+		      var val = l1.substr(i, 1)
+		      var name = this.arraySearch(val.charCodeAt(), chinesePointCode)
+		      if (reg.test(val)) {
+		        I1 += val
+		      } else if (name !== false) {
+		        I1 += name
+		      }
+		    }
+		    I1 = I1.replace(/ /g, '-')
+		    while (I1.indexOf('--') > 0) {
+		      I1 = I1.replace('--', '-')
+		    }
+		    return I1
+	  },
+	  arraySearch: function (l1, l2) {
+	    for (var name in chinesePointCode) {
+	      if (chinesePointCode[name].indexOf(l1) !== -1) {
+	        return this.ucfirst(name)
+	      }
+	    }
+	    return false
+	  },
+	  ucfirst: function (l1) {
+	    if (l1.length > 0) {
+	      var first = l1.substr(0, 1).toUpperCase()
+	      var spare = l1.substr(1, l1.length)
+	      return first + spare
+	    }
+	  }
 	}
 	vuePY.install = function(Vue) {
 		Vue.directive('py', function(el, binding) {
